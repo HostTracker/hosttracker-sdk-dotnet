@@ -39,7 +39,7 @@ jobs:
       - name: Regenerate from the published spec
         env:
           HT_SPEC_URL: ${{ github.event.inputs.spec_url || github.event.client_payload.spec_url }}
-        run: ./scripts/regen.sh
+        run: bash scripts/regen.sh
 
       - name: Build and test
         run: |

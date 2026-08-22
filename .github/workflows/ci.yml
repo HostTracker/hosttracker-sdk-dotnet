@@ -70,7 +70,7 @@ jobs:
 
       - name: Regenerate
         if: steps.spec.outputs.available == 'true'
-        run: ./scripts/regen.sh
+        run: bash scripts/regen.sh
 
       - name: Fail if the committed client is out of date
         if: steps.spec.outputs.available == 'true'
