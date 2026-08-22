@@ -1,10 +1,9 @@
 # Publish the package when a v* tag is pushed.
 #
-# Required secret (Settings -> Secrets and variables -> Actions on this repository):
-#   NUGET_API_KEY - a nuget.org API key scoped to the `HostTracker.Sdk` package id.
-#
-# Until that secret exists the publish step is skipped, so the workflow still builds, tests and
-# attaches the .nupkg/.snupkg to the GitHub release without failing.
+# Publishing uses nuget.org Trusted Publishing (OIDC): a policy on nuget.org (owner `Host-Tracker`,
+# repository HostTracker/hosttracker-sdk-dotnet, workflow release.yml, package `HostTracker.Sdk`) lets
+# the NuGet/login action exchange this job's GitHub token for a short-lived API key. No stored secret.
+# Fallback: set a NUGET_API_KEY repository secret and the publish step uses it instead.
 #
 # The tag drives the package version: v0.1.0 -> 0.1.0. Keep it in step with <Version> in
 # src/HostTracker.Sdk/HostTracker.Sdk.csproj and with CHANGELOG.md.
@@ -17,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   release:
@@ -49,12 +49,20 @@ jobs:
           -c Release --no-build -o ./artifacts
           -p:Version=${{ steps.version.outputs.value }}
 
+      - name: NuGet login (Trusted Publishing)
+        id: nuget-login
+        if: ${{ env.NUGET_API_KEY == '' }}
+        uses: NuGet/login@v1
+        with:
+          user: Host-Tracker
+
       - name: Publish to nuget.org
-        if: ${{ env.NUGET_API_KEY != '' }}
+        env:
+          PUSH_KEY: ${{ env.NUGET_API_KEY != '' && env.NUGET_API_KEY || steps.nuget-login.outputs.NUGET_API_KEY }}
         run: >
           dotnet nuget push "./artifacts/*.nupkg"
           --source https://api.nuget.org/v3/index.json
-          --api-key "$NUGET_API_KEY"
+          --api-key "$PUSH_KEY"
           --skip-duplicate
 
       - name: Attach the packages to the GitHub release
