@@ -19,13 +19,13 @@
     <Company>HostTracker Ltd</Company>
     <Product>HostTracker API v2 SDK</Product>
     <Description>Official .NET client for the HostTracker API v2 - uptime, blacklist, certificate and instant checks, contacts, webhooks, status pages and reports.</Description>
-    <PackageTags>hosttracker;monitoring;uptime;api;sdk;rest</PackageTags>
+    <PackageTags>hosttracker;host-tracker;uptime;uptime-monitoring;website-monitoring;monitoring;status-page;api-client;sdk;rest;openapi;webhooks;ssl-monitoring;blacklist-monitoring</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/HostTracker/hosttracker-sdk-dotnet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HostTracker/hosttracker-sdk-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>See CHANGELOG.md.</PackageReleaseNotes>
+    <PackageReleaseNotes>Release notes: https://github.com/HostTracker/hosttracker-sdk-dotnet/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,0 +1,93 @@
+# HostTracker .NET SDK
+
+> The official .NET client for the HostTracker API v2 - uptime, blacklist, certificate and instant
+> checks, contacts and alerting, webhooks, status pages and reports. The typed surface is generated
+> from the published OpenAPI document; a hand-written layer adds auth, retry, idempotency, paging,
+> job and instant-check polling, and webhook verification.
+
+Package `HostTracker.Sdk`, target `net8.0`, base URL `https://api2.host-tracker.com`.
+
+```bash
+dotnet add package HostTracker.Sdk
+```
+
+## Quick start
+
+```csharp
+using HostTracker.Sdk;
+using HostTracker.Sdk.Generated;
+
+using var client = new HostTrackerClient(Environment.GetEnvironmentVariable("HT_TOKEN"));
+
+// 1. List monitors.
+var page = await client.Monitors.ListMonitorAsync(limit: 50);
+foreach (var m in page.Data)
+    Console.WriteLine($"{m.Name,-30} {m.State} since {UnixTime.ToDateTimeOffset(m.Since):u}");
+
+// 2. Create one.
+var created = await client.Monitors.CreateMonitorAsync(new MonitorWriteRequest
+{
+    Type = MonitorTypes.Http,
+    Url = "https://example.com",
+    Name = "Marketing site",
+    Interval = 5,
+    Locations = new MonitorLocations { Pools = new[] { "allworld" } },
+});
+
+// 3. Run an on-demand check and wait for the verdict.
+var result = await client.RunCheckAsync(new IcCreateRequest { Url = "https://example.com", Type = "http" });
+
+// 4. Verify a webhook delivery, in your endpoint, on the RAW bytes.
+var verdict = WebhookSignature.Verify(request.Headers, rawBody, secrets: new[] { webhookSecret });
+verdict.EnsureValid();
+var evt = WebhookEvent.Parse(rawBody);
+```
+
+Operations are grouped by their API family and each method is named after its `operationId`:
+`Monitors`, `MonitorTypes`, `Results`, `Incidents`, `Maintenance`, `Contacts`, `Alerts`, `Reports`,
+`Webhooks`, `StatusPages`, `Account`, `MonitoringLocations`, `InstantChecks` (alias `Checks`),
+`Jobs`. The client is thread-safe and long-lived: build one per process, or register it as a
+singleton, not one per call. Every failure - a problem document, an HTML 502 from a proxy, a DNS
+failure, a timeout - arrives as a single `HostTrackerException`; branch on `Code`, never on
+`StatusCode` alone.
+
+## Documentation
+
+- [README](https://github.com/HostTracker/hosttracker-sdk-dotnet#readme): the full guide, sections below.
+- [Quick start](https://github.com/HostTracker/hosttracker-sdk-dotnet#quick-start): token, first calls, webhook verification.
+- [Configuration](https://github.com/HostTracker/hosttracker-sdk-dotnet#configuration): `HostTrackerOptions` - token, base URL, timeout, retries, idempotency, handler.
+- [Operations](https://github.com/HostTracker/hosttracker-sdk-dotnet#operations): the families, the body-query twins, the two binary endpoints.
+- [Errors](https://github.com/HostTracker/hosttracker-sdk-dotnet#errors): `HostTrackerException`, `ProblemCodes`, `IsCode`.
+- [Retries and idempotency](https://github.com/HostTracker/hosttracker-sdk-dotnet#retries-and-idempotency): what is retried, automatic `Idempotency-Key`.
+- [Response metadata](https://github.com/HostTracker/hosttracker-sdk-dotnet#response-metadata): request id, rate-limit snapshot, replay flag.
+- [Paging](https://github.com/HostTracker/hosttracker-sdk-dotnet#paging): cursor walking and `syncCursor`.
+- [Jobs](https://github.com/HostTracker/hosttracker-sdk-dotnet#jobs): waiting on the 202 bulk doors.
+- [Instant checks](https://github.com/HostTracker/hosttracker-sdk-dotnet#instant-checks): `RunCheckAsync`.
+- [Webhooks](https://github.com/HostTracker/hosttracker-sdk-dotnet#webhooks): `WebhookSignature.Verify`, rotation, `WebhookEvent.Parse`.
+- [Timestamps](https://github.com/HostTracker/hosttracker-sdk-dotnet#timestamps): Unix seconds, `UnixTime`.
+- [Staying forward compatible](https://github.com/HostTracker/hosttracker-sdk-dotnet#staying-forward-compatible): absorbing values added after your restore.
+- [Regenerating the client](https://github.com/HostTracker/hosttracker-sdk-dotnet#regenerating-the-client): NSwag, `HT_SPEC=…`.
+- [CHANGELOG](https://github.com/HostTracker/hosttracker-sdk-dotnet/blob/main/CHANGELOG.md)
+
+## The API
+
+- [API reference](https://www.host-tracker.com/apidocs/v2): every operation, by tag.
+- [Guides](https://www.host-tracker.com/apidocs/v2/guide): authentication, paging, jobs, webhooks, errors.
+- [API tokens](https://www.host-tracker.com/integrations/api): mint a token and pick its scopes.
+- [OpenAPI document](https://api2.host-tracker.com/openapi/v2.json): the contract this client is generated from.
+- [openapi repository](https://github.com/HostTracker/openapi): the published document, its twins and the contract facts.
+- [MCP server](https://mcp.host-tracker.com/mcp): streamable-HTTP MCP endpoint for AI agents.
+- [Problem codes](https://api2.host-tracker.com/problems/): `https://api2.host-tracker.com/problems/{code}`.
+
+## Sibling clients
+
+- [hosttracker-sdk-js](https://github.com/HostTracker/hosttracker-sdk-js): `npm install @hosttracker/sdk`.
+- [hosttracker-sdk-python](https://github.com/HostTracker/hosttracker-sdk-python): `pip install hosttracker`.
+- [hosttracker-sdk-go](https://github.com/HostTracker/hosttracker-sdk-go): `go get github.com/HostTracker/hosttracker-sdk-go`.
+- [ht-cli](https://github.com/HostTracker/cli): the command-line client.
+- [SDK overview](https://www.host-tracker.com/integrations/sdk): all clients, on the HostTracker site.
+
+## Optional
+
+- [NuGet package](https://www.nuget.org/packages/HostTracker.Sdk): published releases.
+- [Issues](https://github.com/HostTracker/hosttracker-sdk-dotnet/issues): bugs and questions about this client. MIT licensed.
