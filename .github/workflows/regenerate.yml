@@ -1,0 +1,61 @@
+# Regenerate the client when the published OpenAPI document changes.
+#
+# The openapi repository sends a `repository_dispatch` of type `spec-updated` once it has validated a
+# new document; this workflow regenerates, builds, tests and opens a PR for review.
+#
+# Setup: GITHUB_TOKEN needs `contents: write` + `pull-requests: write` (granted below). The
+# dispatching repository needs a fine-grained PAT with "Contents: read and write" on this repository,
+# stored there as SDK_DISPATCH_TOKEN - nothing to configure here.
+name: regenerate
+
+on:
+  repository_dispatch:
+    types: [spec-updated]
+  workflow_dispatch:
+    inputs:
+      spec_url:
+        description: Override the spec URL to regenerate from.
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Regenerate from the published spec
+        env:
+          HT_SPEC_URL: ${{ github.event.inputs.spec_url || github.event.client_payload.spec_url }}
+        run: ./scripts/regen.sh
+
+      - name: Build and test
+        run: |
+          dotnet build HostTracker.Sdk.sln -c Release
+          dotnet test HostTracker.Sdk.sln -c Release --no-build
+
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          branch: regenerate/spec-update
+          title: "Regenerate the client from the latest OpenAPI document"
+          commit-message: "Regenerate the client from the latest OpenAPI document"
+          body: |
+            Automated regeneration triggered by a change to the published OpenAPI document.
+
+            Review the diff for breaking changes before merging: a renamed or removed type or
+            method is a major version bump for consumers, and `CHANGELOG.md` needs the entry.
+          labels: generated
+          add-paths: |
+            src/HostTracker.Sdk/Generated

@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+build/
+artifacts/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Test output
+TestResults/
+*.trx
+coverage*.json
+coverage*.xml
+*.coverage

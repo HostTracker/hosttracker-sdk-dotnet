@@ -1,0 +1,8 @@
+<Project>
+  <!-- This repository pins package versions on its PackageReference items. The file exists so the build stays
+       self-contained when the repository is cloned underneath a parent tree that enables NuGet Central Package
+       Management (MSBuild discovers the NEAREST Directory.Packages.props walking up from each project). -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

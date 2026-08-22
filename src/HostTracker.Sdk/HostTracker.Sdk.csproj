@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>HostTracker.Sdk</AssemblyName>
+    <RootNamespace>HostTracker.Sdk</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>HostTracker.Sdk</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>HostTracker Ltd</Authors>
+    <Company>HostTracker Ltd</Company>
+    <Product>HostTracker API v2 SDK</Product>
+    <Description>Official .NET client for the HostTracker API v2 - uptime, blacklist, certificate and instant checks, contacts, webhooks, status pages and reports.</Description>
+    <PackageTags>hosttracker;monitoring;uptime;api;sdk;rest</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/HostTracker/hosttracker-sdk-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HostTracker/hosttracker-sdk-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>See CHANGELOG.md.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="HostTracker.Sdk.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" Visible="false" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" Visible="false" />
+  </ItemGroup>
+
+  <!-- The generated client is never hand-edited; it carries NSwag's own pragmas for
+       most diagnostics. These are the few the analyzers still raise over it. -->
+  <ItemGroup>
+    <Compile Update="Generated/*.g.cs">
+      <NoWarn>$(NoWarn);CS1591;CS8618;CS8625;CS8603;CS8604;CA1707;CA1819;CA2227;CA1002;CA1054;CA1056;IDE0005</NoWarn>
+    </Compile>
+  </ItemGroup>
+
+</Project>
