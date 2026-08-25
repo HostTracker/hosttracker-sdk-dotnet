@@ -43783,7 +43783,7 @@ namespace HostTracker.Sdk.Generated
         public System.Collections.Generic.ICollection<string>? Tags { get; set; } = default!;
 
         /// <summary>
-        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation.
+        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the monitor reads back as `waterfall`.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string Type { get; set; } = default!;
@@ -43888,7 +43888,7 @@ namespace HostTracker.Sdk.Generated
         public System.Collections.Generic.ICollection<string>? Tags { get; set; } = default!;
 
         /// <summary>
-        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation.
+        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the monitor reads back as `waterfall`.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string? Type { get; set; } = default!;
@@ -46155,11 +46155,17 @@ namespace HostTracker.Sdk.Generated
     public partial class ContactActivePeriodView
     {
 
+        /// <summary>
+        /// When the window opens, as a clock time of day - `"09:00:00"`.
+        /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("start")]
-        public System.TimeSpan Start { get; set; } = default!;
+        public string Start { get; set; } = default!;
 
+        /// <summary>
+        /// When the window closes, as a clock time of day - `"18:00:00"`.
+        /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("end")]
-        public System.TimeSpan End { get; set; } = default!;
+        public string End { get; set; } = default!;
 
         /// <summary>
         /// The week days the window applies on, as names.
@@ -52975,7 +52981,13 @@ namespace HostTracker.Sdk.Generated
         public System.Collections.Generic.ICollection<string>? Pools { get; set; } = default!;
 
         /// <summary>
-        /// Which kind of check to run. Defaults to `http`.
+        /// Validate the TLS handshake strictly. When true an untrusted root, an incomplete chain, a hostname mismatch or a self-signed certificate is recorded on the result's TLS details and fails the handshake - what a certificate checker wants. Default false keeps the relaxed handshake an uptime check wants, where an incomplete chain must not read as down. HTTP checks only.
+        /// </summary>
+        [System.Text.Json.Serialization.JsonPropertyName("strictTls")]
+        public bool? StrictTls { get; set; } = default!;
+
+        /// <summary>
+        /// Which kind of check to run. Defaults to `http`. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the check reads back as `waterfall`.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string? Type { get; set; } = default!;
@@ -59794,7 +59806,7 @@ namespace HostTracker.Sdk.Generated
         public System.Collections.Generic.ICollection<string>? Tags { get; set; } = default!;
 
         /// <summary>
-        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation.
+        /// Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after creation. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the monitor reads back as `waterfall`.
         /// </summary>
         [System.Text.Json.Serialization.JsonPropertyName("type")]
         public string? Type { get; set; } = default!;

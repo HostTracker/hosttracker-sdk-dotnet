@@ -14,7 +14,7 @@
 
   <PropertyGroup Label="Package">
     <PackageId>HostTracker.Sdk</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>HostTracker Ltd</Authors>
     <Company>HostTracker Ltd</Company>
     <Product>HostTracker API v2 SDK</Product>

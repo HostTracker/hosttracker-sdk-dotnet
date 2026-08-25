@@ -42,7 +42,7 @@ namespace HostTracker.Sdk.Tests
 
             // HttpHeaders splits a User-Agent into its product tokens, so read them all back.
             var products = Assert.Single(handler.Requests).Headers["User-Agent"];
-            Assert.Equal(new[] { "hosttracker-sdk-dotnet/0.1.0", "acme-deploy/2.1" }, products);
+            Assert.Equal(new[] { "hosttracker-sdk-dotnet/0.2.0", "acme-deploy/2.1" }, products);
         }
 
         [Fact]

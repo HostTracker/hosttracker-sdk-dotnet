@@ -4,7 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-08-25
+
+### Fixed
+
+- The contact read view's `activePeriods[].start`/`end` are published as plain clock-time strings
+  (`"09:00:00"`), matching what the API has always sent. They were wrongly documented as
+  `format: duration` (an ISO 8601 duration), which made the generated model reject every real payload.
+
+### Added
+
+- `strictTls` on the instant-check create request (`POST /check`, http checks only). `true` validates the
+  TLS handshake strictly: an untrusted root, an incomplete chain, a hostname mismatch or a self-signed
+  certificate is recorded on the result's TLS details and fails the handshake, which is what a certificate
+  check wants. Omitted or `false` keeps the relaxed handshake an uptime check wants.
+
+### Removed
+
+- `rusRegBL` is no longer an instant-check type; the API withdrew it from `POST /check` (it stays a monitor
+  type). Regenerated from the published specification, which also documents `pageSpeed` as an input alias
+  for the `waterfall` type on monitors and checks.
+
+## [0.1.0] - 2026-08-22
+
+First release.
 
 ### Changed
 
@@ -29,8 +52,6 @@ All notable changes to this project are documented here. The format follows
 - `RunCheckAsync` takes only the path and query of the server-supplied `resultUrl` and dials them on
   the configured `BaseUrl`, so the bearer token cannot reach another origin. Non-http(s) values are
   still refused.
-
-## [0.1.0] - Unreleased
 
 First release. Targets `net8.0`; package id `HostTracker.Sdk`.
 
@@ -58,5 +79,5 @@ First release. Targets `net8.0`; package id `HostTracker.Sdk`.
 - `UnixTime` helpers, and generated constant classes for the document's vocabularies.
 - `SendJsonAsync` escape hatch for explicit nulls and endpoints newer than the SDK build.
 
-[Unreleased]: https://github.com/HostTracker/hosttracker-sdk-dotnet/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/HostTracker/hosttracker-sdk-dotnet/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/HostTracker/hosttracker-sdk-dotnet/releases/tag/v0.1.0
